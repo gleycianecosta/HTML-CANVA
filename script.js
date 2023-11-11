@@ -1,38 +1,32 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const canvas = document.getElementById("myCanvas");
+    const canvas = document.getElementById("wavesCanvas");
     const ctx = canvas.getContext("2d");
 
-    let x = 50;
-    let y = 50;
-    let radius = 20;
-    let dx = 5;
-    let dy = 5;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight * 0.2;
 
-    function drawCircle() {
+    const waveColors = ['#000080', '#ff8c00'];
+
+    function drawWaves() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
 
-    function updatePosition() {
-        x += dx;
-        y += dy;
-
-        if (x + radius > canvas.width || x - radius < 0) {
-            dx = -dx;
-        }
-
-        if (y + radius > canvas.height || y - radius < 0) {
-            dy = -dy;
+        for (let i = 0; i < waveColors.length; i++) {
+            const waveHeight = 20 + Math.sin(Date.now() * 0.002 + i * Math.PI) * 15;
+            ctx.fillStyle = waveColors[i];
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            for (let x = 0; x < canvas.width; x += 10) {
+                const y = Math.sin(x * 0.02 + Date.now() * 0.002 + i * Math.PI) * waveHeight + canvas.height - 20;
+                ctx.lineTo(x, y);
+            }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.closePath();
+            ctx.fill();
         }
     }
 
     function animate() {
-        drawCircle();
-        updatePosition();
+        drawWaves();
         requestAnimationFrame(animate);
     }
 
